@@ -1,3 +1,6 @@
+# Files and directories created by example scripts
+examples/sls_param_scan/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
