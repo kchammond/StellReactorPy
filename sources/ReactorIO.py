@@ -91,13 +91,13 @@ def scanTable(inParList, outParList):
 
 def makePlots(data, x_var, x_label, ylims={}):
 
-    figHt = 8
+    figHt = 12
     figWd = 15
-    axVgap = 0.05
+    axVgap = 0.03
     axHgap = 0.03
-    axVlab = 0.05
+    axVlab = 0.03
     axHlab = 0.03
-    axHt = 0.38
+    axHt = 0.27
     axWd = 0.27
     lw = 2
 
@@ -111,7 +111,7 @@ def makePlots(data, x_var, x_label, ylims={}):
 
     f1 = pl.figure(figsize=(figWd, figHt))
 
-    axP = f1.add_axes([1*axHlab+1*axHgap+0*axWd, 2*axVlab+2*axVgap+1*axHt, \
+    axP = f1.add_axes([1*axHlab+1*axHgap+0*axWd, 3*axVlab+3*axVgap+2*axHt, \
                        axWd, axHt])
     axP.plot(x_var, data.P_el_net, label='$P_{net}$', linewidth=lw, \
              color=(0.4, 0.0, 0.7))
@@ -124,7 +124,7 @@ def makePlots(data, x_var, x_label, ylims={}):
     axP.grid()
     axP.legend()
 
-    axN = f1.add_axes([2*axHlab+2*axHgap+1*axWd, 2*axVlab+2*axVgap+1*axHt, \
+    axN = f1.add_axes([2*axHlab+2*axHgap+1*axWd, 3*axVlab+3*axVgap+2*axHt, \
                        axWd, axHt])
     axN.plot(x_var, data.ne_la, label='$\overline{n}_e$', linewidth=lw, \
              color=(0.0, 0.5, 0.0))
@@ -137,7 +137,7 @@ def makePlots(data, x_var, x_label, ylims={}):
     axN.grid()
     axN.legend()
 
-    axQB = f1.add_axes([3*axHlab+3*axHgap+2*axWd, 2*axVlab+2*axVgap+1*axHt, \
+    axQB = f1.add_axes([3*axHlab+3*axHgap+2*axWd, 3*axVlab+3*axVgap+2*axHt, \
                        axWd, axHt])
     axQB.plot(x_var, data.Q_eng, label='$Q_{eng}$', linewidth=lw, 
               color=(0.0, 0.0, 0.6))
@@ -150,7 +150,7 @@ def makePlots(data, x_var, x_label, ylims={}):
     axQB.grid()
     axQB.legend()
 
-    axT = f1.add_axes([1*axHlab+1*axHgap+0*axWd, 1*axVlab+1*axVgap+0*axHt, \
+    axT = f1.add_axes([1*axHlab+1*axHgap+0*axWd, 2*axVlab+2*axVgap+1*axHt, \
                        axWd, axHt])
     axT.plot(x_var, data.T0, label='$T_0$', linewidth=lw, \
              color=(0.6, 0.0, 0.0))
@@ -163,7 +163,7 @@ def makePlots(data, x_var, x_label, ylims={}):
     axT.grid()
     axT.legend()
 
-    axL = f1.add_axes([2*axHlab+2*axHgap+1*axWd, 1*axVlab+1*axVgap+0*axHt, \
+    axL = f1.add_axes([2*axHlab+2*axHgap+1*axWd, 2*axVlab+2*axVgap+1*axHt, \
                        axWd, axHt])
     axL.plot(x_var, data.neut_wall_load, label='Neutron load', \
              linewidth=lw, color=(0.4, 0.4, 0.4))
@@ -174,7 +174,7 @@ def makePlots(data, x_var, x_label, ylims={}):
     axL.grid()
     axL.legend()
 
-    axPf = f1.add_axes([3*axHlab+3*axHgap+2*axWd, 1*axVlab+1*axVgap+0*axHt, \
+    axPf = f1.add_axes([3*axHlab+3*axHgap+2*axWd, 2*axVlab+2*axVgap+1*axHt, \
                        axWd, axHt])
     rho = np.linspace(0,1,100)
     profile = lambda alpha: (1. - rho**2)**alpha
@@ -195,6 +195,19 @@ def makePlots(data, x_var, x_label, ylims={}):
     axPf.set_ylabel('A.U.')
     axPf.grid()
     axPf.legend()
+
+    axBt = f1.add_axes([2*axHlab+2*axHgap+1*axWd, 1*axVlab+1*axVgap+0*axHt, \
+                       axWd, axHt])
+    axBt.plot(x_var, data.Bt, label=r'$B_{t,axis}$', \
+              linewidth=lw, color=(0,1,1))
+    axBt.plot(x_var, data.Bt_coil, label=r'$B_{t,coil}$', \
+              linewidth=lw, color=(0,0,1))
+    axBt.set_xlabel(x_label)
+    axBt.set_ylabel('T')
+    if 'Bt' in ylims:
+        axBt.set_ylim(ylims['Bt'])
+    axBt.grid()
+    axBt.legend()
 
     return f1
 

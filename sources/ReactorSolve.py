@@ -96,13 +96,21 @@ class constraintBuilder():
     def beta_th_limit(inPar, outPar):
         return outPar['beta_th'].value/inPar['beta_th_lim'].value
 
+    def Bt_coil_limit(inPar, outPar):
+        return outPar['Bt_coil'].value/inPar['Bt_coil_lim'].value
+
+    def T0_limit(inPar, outPar):
+        return outPar['T0'].value/inPar['T0_lim'].value
+
     constraintKey= { \
         'P_heat_consistency': {'fun': P_heat_consistency, 'type': 'eq'  }, \
         'density_limit':      {'fun': density_limit,      'type': 'ineq'}, \
         'neut_load_limit':    {'fun': neut_load_limit,    'type': 'ineq'}, \
         'P_el_target':        {'fun': P_el_target,        'type': 'eq'  }, \
         'P_heat_target':      {'fun': P_heat_target,      'type': 'eq'  }, \
-        'beta_th_limit':      {'fun': beta_th_limit,      'type': 'ineq'}   }
+        'beta_th_limit':      {'fun': beta_th_limit,      'type': 'ineq'}, \
+        'Bt_coil_limit':      {'fun': Bt_coil_limit,      'type': 'ineq'}, \
+        'T0_limit':           {'fun': T0_limit,           'type': 'ineq'}   }
 
     def general_constraint(x, funcs, optPar, inPar):
 
@@ -320,8 +328,12 @@ def initInPar():
             desc='Target value for the total heating power'         ), \
         'ne_nSudo_lim':  param('ne_nSudo_lim',  '',           1.   ,   \
             desc='Max ratio of line-averaged density to Sudo limit' ), \
-        'beta_th_lim':   param('beta_th_targ',  '',           1.   ,   \
+        'beta_th_lim':   param('beta_th_lim',   '',           1.   ,   \
             desc='Maximum value for the thermal plasma beta'        ), \
+        'Bt_coil_lim':   param('Bt_coil_lim',   'T',          1.   ,   \
+            desc='Maximum value for Bt at the coil, inboard side'   ), \
+        'T0_lim':        param('T0_lim',        'keV',        1.e3 ,   \
+            desc='Maximum value peak/central plasma temperature'    ), \
         'max_neut_load': param('max_neut_load', 'MW/m^2',     1.e6 ,   \
             desc='Maximum permissible neutron wall load'            )  \
        }
