@@ -99,6 +99,9 @@ class constraintBuilder():
     def Bt_coil_limit(inPar, outPar):
         return outPar['Bt_coil'].value/inPar['Bt_coil_lim'].value
 
+    def Bmax_coil_limit(inPar, outPar):
+        return outPar['Bmax_coil'].value/inPar['Bmax_coil_lim'].value
+
     def T0_limit(inPar, outPar):
         return outPar['T0'].value/inPar['T0_lim'].value
 
@@ -110,6 +113,7 @@ class constraintBuilder():
         'P_heat_target':      {'fun': P_heat_target,      'type': 'eq'  }, \
         'beta_th_limit':      {'fun': beta_th_limit,      'type': 'ineq'}, \
         'Bt_coil_limit':      {'fun': Bt_coil_limit,      'type': 'ineq'}, \
+        'Bmax_coil_limit':    {'fun': Bmax_coil_limit,    'type': 'ineq'}, \
         'T0_limit':           {'fun': T0_limit,           'type': 'ineq'}   }
 
     def general_constraint(x, funcs, optPar, inPar):
@@ -170,29 +174,31 @@ class costFuncBuilder():
 def evalParams(inPar, verbose=False):
 
     # Input parameters
-    R_maj      = inPar['R_maj'].data()
-    aspect     = inPar['aspect'].data()
-    elong      = inPar['elong'].data()
-    Bt         = inPar['Bt'].data()
-    iota_23    = inPar['iota_23'].data()
-    H          = inPar['H'].data()
-    ne_vol_avg = inPar['ne_vol_avg'].data()
-    alpha_n    = inPar['alpha_n'].data()
-    alpha_T    = inPar['alpha_T'].data()
-    Z_eff      = inPar['Z_eff'].data()
-    Z_imp      = inPar['Z_imp'].data()
-    th_blanket = inPar['th_blanket'].data()
-    dist_pl_vv = inPar['dist_pl_vv'].data()
-    eta_th     = inPar['eta_th'].data()
-    eta_aux    = inPar['eta_aux'].data()
-    M_n        = inPar['M_n'].data()
-    P_aux      = inPar['P_aux'].data()
-    P_heat     = inPar['P_heat'].data()
+    R_maj        = inPar['R_maj'].data()
+    aspect       = inPar['aspect'].data()
+    elong        = inPar['elong'].data()
+    Bt           = inPar['Bt'].data()
+    Bmax_Bt_coil = inPar['Bmax_Bt_coil'].data()
+    iota_23      = inPar['iota_23'].data()
+    H            = inPar['H'].data()
+    ne_vol_avg   = inPar['ne_vol_avg'].data()
+    alpha_n      = inPar['alpha_n'].data()
+    alpha_T      = inPar['alpha_T'].data()
+    Z_eff        = inPar['Z_eff'].data()
+    Z_imp        = inPar['Z_imp'].data()
+    th_blanket   = inPar['th_blanket'].data()
+    dist_pl_vv   = inPar['dist_pl_vv'].data()
+    eta_th       = inPar['eta_th'].data()
+    eta_aux      = inPar['eta_aux'].data()
+    M_n          = inPar['M_n'].data()
+    P_aux        = inPar['P_aux'].data()
+    P_heat       = inPar['P_heat'].data()
 
     pl_vol       = re.plasma_volume(R_maj, aspect)
     pl_surf_area = re.plasma_surface_area(R_maj, aspect, elong)
 
     Bt_coil = re.Bt_coil_inboard(Bt, R_maj, aspect, th_blanket, dist_pl_vv)
+    Bmax_coil = re.Bmax_coil(Bt_coil, Bmax_Bt_coil)
     
     nd_ne = re.nd_ne(Z_eff, Z_imp)
     ni_ne = re.ni_ne(nd_ne, Z_eff, Z_imp)
@@ -257,6 +263,7 @@ def evalParams(inPar, verbose=False):
     outPar['T_wtd_vol_avg'].set(T_wtd_vol_avg)
     outPar['dt_neut_rate'].set(dt_neut_rate)
     outPar['Bt_coil'].set(Bt_coil)
+    outPar['Bmax_coil'].set(Bmax_coil)
     outPar['P_fus'].set(P_fus)
     outPar['beta_th'].set(beta_th)
     outPar['P_neut'].set(P_neut)
@@ -288,6 +295,8 @@ def initInPar():
             desc='Elongation'                                       ), \
         'Bt':            param('Bt',            'T',          1.   ,   \
             desc='Toroidal magnetic field',                         ), \
+        'Bmax_Bt_coil':  param('Bt',            '',           1.   ,   \
+            desc='Ratio of Bmax_coil to Bt_coil',                   ), \
         'iota_23':       param('iota_23',       '',           1.   ,   \
             desc='Rotational transform at 2/3 of the minor radius'  ), \
         'ne_vol_avg':    param('ne_vol_avg',    '10^20 m^-3', 1.e20,   \
@@ -331,7 +340,9 @@ def initInPar():
         'beta_th_lim':   param('beta_th_lim',   '',           1.   ,   \
             desc='Maximum value for the thermal plasma beta'        ), \
         'Bt_coil_lim':   param('Bt_coil_lim',   'T',          1.   ,   \
-            desc='Maximum value for Bt at the coil, inboard side'   ), \
+            desc='Maximum value for Bt at the coils, inboard side'  ), \
+        'Bmax_coil_lim': param('Bmax_coil_lim', 'T',          1.   ,   \
+            desc='Maximum value for |B| at the coils',              ), \
         'T0_lim':        param('T0_lim',        'keV',        1.e3 ,   \
             desc='Maximum value peak/central plasma temperature'    ), \
         'max_neut_load': param('max_neut_load', 'MW/m^2',     1.e6 ,   \
@@ -376,6 +387,8 @@ def initOutPar():
             desc='Thermal beta'),                                        \
         'Bt_coil':         param('Bt_coil',        'T',          1.   ,  \
             desc='Estimated toroidal field at the coils, inboard side'), \
+        'Bmax_coil':       param('Bmax_coil',      'T',          1.   ,  \
+            desc='Maximum field at the coils'),                          \
         'P_fus':           param('P_fus',          'MW',         1.e6 ,  \
             desc='Total fusion power'),                                  \
         'P_neut':          param('P_neut',         'MW',         1.e6 ,  \

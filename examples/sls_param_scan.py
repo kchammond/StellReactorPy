@@ -48,6 +48,7 @@ if __name__=='__main__':
                       aspect     = 5.5,               \
                       elong      = 3.96,              \
                       Bt         = 6.0,               \
+                      Bmax_Bt_coil = 1.5,             \
                       iota_23    = 0.57,              \
                       H          = 1.5,               \
                       ne_vol_avg = 6.00,              \

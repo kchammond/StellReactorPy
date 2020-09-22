@@ -358,7 +358,16 @@ def Bt_coil_inboard(Bt, R_maj, aspect, th_blanket, dist_pl_vv):
 
     r_coil = R_maj * (1. - 1./aspect) - dist_pl_vv - th_blanket
     return Bt * R_maj / r_coil
+
+def Bmax_coil(Bt_coil, Bmax_Bt_coil):
+    '''
+    Provides the maximum field at the coils based on the inboard toroidal
+    field at the coils and a configuration-dependent enhancement factor
+        Bt_coil      = toroidal field at the coil on the inboard side (T)
+        Bmax_Bt_coil = Ratio of the maximum field at the coil to Bt_coil
+    '''
     
+    return Bt_coil * Bmax_Bt_coil
 
 #----- Power plant quantities --------------------------------------------------
 
