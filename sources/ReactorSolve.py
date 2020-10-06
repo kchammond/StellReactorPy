@@ -295,7 +295,7 @@ def initInPar():
             desc='Elongation'                                       ), \
         'Bt':            param('Bt',            'T',          1.   ,   \
             desc='Toroidal magnetic field',                         ), \
-        'Bmax_Bt_coil':  param('Bt',            '',           1.   ,   \
+        'Bmax_Bt_coil':  param('Bmax_Bt_coil',  '',           1.   ,   \
             desc='Ratio of Bmax_coil to Bt_coil',                   ), \
         'iota_23':       param('iota_23',       '',           1.   ,   \
             desc='Rotational transform at 2/3 of the minor radius'  ), \
